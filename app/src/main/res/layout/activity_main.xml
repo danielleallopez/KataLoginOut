@@ -46,7 +46,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-            android:text="Login"
+            android:text="LOG IN"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btn_login"
@@ -66,7 +66,7 @@
             app:constraint_referenced_ids="edit_username,btn_login,edit_password"/>
 
     <Button
-            android:text="Logout"
+            android:text="LOG OUT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btn_logout"
