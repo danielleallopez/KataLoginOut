@@ -30,7 +30,12 @@ class MainActivity : AppCompatActivity() {
             hideKeyboard(this)
         }
 
-        btn_logout.setOnClickListener { logout() }
+        btn_logout.setOnClickListener {
+            val timeMillis = System.currentTimeMillis()
+            if (timeMillis % 2 == 0L) {
+                logout()
+            }
+        }
     }
 
     private fun login() {
