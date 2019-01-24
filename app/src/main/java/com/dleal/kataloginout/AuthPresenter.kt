@@ -15,7 +15,7 @@ class AuthPresenter(
             logIn()
         } else {
             //Error
-            view.showError("Invalid credentials")
+            view.showError(WRONG_CREDENTIALS_MESSAGE)
         }
     }
 
@@ -36,3 +36,5 @@ class AuthPresenter(
         view.hideLogOutForm()
     }
 }
+
+private const val WRONG_CREDENTIALS_MESSAGE = "Invalid credentials"
