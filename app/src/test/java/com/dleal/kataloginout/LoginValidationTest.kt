@@ -71,14 +71,3 @@ class TestCase(
     val password: String,
     val expectedResult: Boolean
 )
-
-private const val EMPTY = ""
-
-private const val VALID_USERNAME = "admin"
-private const val INVALID_USERNAME = "wrong"
-
-private const val VALID_PASSWORD = "admin"
-private const val INVALID_PASSWORD = "1234"
-
-private const val EVEN_TIME = 123456L
-private const val ODD_TIME = 12345L
