@@ -1,7 +1,7 @@
 package com.dleal.kataloginout
 
 import android.os.Bundle
-import android.widget.Toast
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -17,10 +17,12 @@ class MainActivity : AppCompatActivity() {
 
             if (username == USERNAME && password == PASSWORD) {
                 //Success
-                Toast.makeText(this, "SUCCESS", Toast.LENGTH_SHORT).show()
+                login_group.hide()
+                btn_logout.show()
             } else {
-                //ERROR
-                Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show()
+                //Error
+                login_group.show()
+                btn_logout.hide()
             }
         }
     }
@@ -28,3 +30,11 @@ class MainActivity : AppCompatActivity() {
 
 private const val USERNAME = "admin"
 private const val PASSWORD = "admin"
+
+fun View.show(){
+    this.visibility = View.VISIBLE
+}
+
+fun View.hide(){
+    this.visibility = View.GONE
+}
