@@ -6,11 +6,15 @@ class LoginValidator {
         username == USERNAME && password == PASSWORD
 }
 
-class LogoutValidator() {
+class LogoutValidator(private val timeProvider: TimeProvider) {
+
     fun performLogout(): Boolean {
-        val timeMillis = System.currentTimeMillis()
-        return timeMillis % 2 == 0L
+        return timeProvider.getTimeMillis() % 2 == 0L
     }
+}
+
+class TimeProvider() {
+    fun getTimeMillis() = System.currentTimeMillis()
 }
 
 private const val USERNAME = "admin"

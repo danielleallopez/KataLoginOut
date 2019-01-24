@@ -11,8 +11,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private val loginValidator = LoginValidator()
-    private val logoutValidator = LogoutValidator()
+    private val loginValidator by lazy { LoginValidator() }
+    private val timeProvider by lazy { TimeProvider() }
+    private val logoutValidator by lazy { LogoutValidator(timeProvider) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +35,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         btn_logout.setOnClickListener {
+            val timeMillis = System.currentTimeMillis()
             if (logoutValidator.performLogout()) {
                 logout()
             }

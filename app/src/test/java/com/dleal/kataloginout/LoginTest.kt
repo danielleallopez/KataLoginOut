@@ -1,9 +1,18 @@
 package com.dleal.kataloginout
 
+import com.nhaarman.mockito_kotlin.whenever
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.junit.MockitoJUnitRunner
 
+@RunWith(MockitoJUnitRunner::class)
 class LoginTest {
+
+    @Mock
+    lateinit var timeProvider: TimeProvider
 
     private val testCases = listOf(
         TestCase("Valid username and password", VALID_USERNAME, VALID_PASSWORD, true),
@@ -21,14 +30,39 @@ class LoginTest {
     fun returnsProperLoginValue() {
         val loginValidator = givenLoginValidator()
 
-        testCases.forEach {testCase ->
-            with(testCase){
+        testCases.forEach { testCase ->
+            with(testCase) {
                 assertTrue(message, loginValidator.performLogin(username, password) == expectedResult)
             }
         }
     }
 
+    @Test
+    fun logsOutWhenCurrentTimeIsEven() {
+        givenEvenTime()
+        val logoutValidator = givenLogoutValidator()
+
+        assertTrue("Logs out when time is even", logoutValidator.performLogout())
+    }
+
+    @Test
+    fun doesNotLogOutWhenCurrentTimeIsOdd() {
+        givenOddTime()
+        val logoutValidator = givenLogoutValidator()
+
+        assertFalse("Logs out when time is even", logoutValidator.performLogout())
+    }
+
     private fun givenLoginValidator() = LoginValidator()
+    private fun givenLogoutValidator() = LogoutValidator(timeProvider)
+
+    private fun givenEvenTime() {
+        whenever(timeProvider.getTimeMillis()).thenReturn(EVEN_TIME)
+    }
+
+    private fun givenOddTime() {
+        whenever(timeProvider.getTimeMillis()).thenReturn(ODD_TIME)
+    }
 }
 
 class TestCase(
@@ -45,3 +79,6 @@ private const val INVALID_USERNAME = "wrong"
 
 private const val VALID_PASSWORD = "admin"
 private const val INVALID_PASSWORD = "1234"
+
+private const val EVEN_TIME = 123456L
+private const val ODD_TIME = 12345L
