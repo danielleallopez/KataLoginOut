@@ -11,6 +11,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
+    private val loginValidator = LoginValidator()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -19,7 +21,7 @@ class MainActivity : AppCompatActivity() {
             val username = edit_username.editText?.text.toString()
             val password = edit_password.editText?.text.toString()
 
-            if (username == USERNAME && password == PASSWORD) {
+            if (loginValidator.performLogin(username, password)) {
                 //Success
                 login()
             } else {
@@ -61,6 +63,3 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
-
-private const val USERNAME = "admin"
-private const val PASSWORD = "admin"
