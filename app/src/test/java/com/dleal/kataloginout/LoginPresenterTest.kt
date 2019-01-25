@@ -2,12 +2,17 @@ package com.dleal.kataloginout
 
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.setMain
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.times
 import org.mockito.junit.MockitoJUnitRunner
+import java.util.concurrent.Executors
 
 @RunWith(MockitoJUnitRunner::class)
 class LoginPresenterTest {
@@ -20,52 +25,61 @@ class LoginPresenterTest {
     @Mock
     lateinit var logoutValidator: LogoutValidator
 
-    private lateinit var loginPresenter : AuthPresenter
+    private lateinit var loginPresenter: AuthPresenter
 
     @Before
-    fun setUp(){
+    fun setUp() {
+        Dispatchers.setMain(Executors.newSingleThreadExecutor().asCoroutineDispatcher())
         loginPresenter = AuthPresenter(authView, loginValidator, logoutValidator)
     }
 
     @Test
     fun showsLogoutFormWhenCredentialsAreValid() {
-        givenValidCredentials()
+        runBlocking {
+            givenValidCredentials()
 
-        loginPresenter.onLogInButtonClick()
+            loginPresenter.onLogInButtonClick().join()
 
-        verify(authView, times(1)).hideLogInForm()
-        verify(authView, times(1)).showLogOutForm()
+            verify(authView, times(1)).hideLogInForm()
+            verify(authView, times(1)).showLogOutForm()
+        }
     }
 
     @Test
     fun showsErrorWhenCredentialsAreInvalid() {
-        givenInvalidCredentials()
+        runBlocking {
+            givenInvalidCredentials()
 
-        loginPresenter.onLogInButtonClick()
+            loginPresenter.onLogInButtonClick().join()
 
-        verify(authView, times(1)).showError("Invalid credentials")
+            verify(authView, times(1)).showError("Invalid credentials")
+        }
     }
 
     @Test
-    fun showsLogInFormWhenUserLogsOut(){
-        givenWillLogOut()
+    fun showsLogInFormWhenUserLogsOut() {
+        runBlocking {
+            givenWillLogOut()
 
-        loginPresenter.onLogOutButtonClick()
+            loginPresenter.onLogOutButtonClick().join()
 
-        verify(authView, times(1)).clearLogInForm()
-        verify(authView, times(1)).showLogInForm()
-        verify(authView, times(1)).hideLogOutForm()
+            verify(authView, times(1)).clearLogInForm()
+            verify(authView, times(1)).showLogInForm()
+            verify(authView, times(1)).hideLogOutForm()
+        }
     }
 
     @Test
-    fun doesNothingWhenUserClicksLogsOutButTimeIsOdd(){
-        givenWillNotLogOut()
+    fun doesNothingWhenUserClicksLogsOutButTimeIsOdd() {
+        runBlocking {
+            givenWillNotLogOut()
 
-        loginPresenter.onLogOutButtonClick()
+            loginPresenter.onLogOutButtonClick().join()
 
-        verify(authView, times(0)).clearLogInForm()
-        verify(authView, times(0)).showLogInForm()
-        verify(authView, times(0)).hideLogOutForm()
+            verify(authView, times(0)).clearLogInForm()
+            verify(authView, times(0)).showLogInForm()
+            verify(authView, times(0)).hideLogOutForm()
+        }
     }
 
     private fun givenValidCredentials() {
@@ -78,11 +92,11 @@ class LoginPresenterTest {
         whenever(authView.getPassword()).thenReturn(INVALID_PASSWORD)
     }
 
-    private fun givenWillLogOut(){
+    private fun givenWillLogOut() {
         whenever(logoutValidator.performLogout()).thenReturn(true)
     }
 
-    private fun givenWillNotLogOut(){
+    private fun givenWillNotLogOut() {
         whenever(logoutValidator.performLogout()).thenReturn(false)
     }
 }
